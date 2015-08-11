@@ -8,6 +8,14 @@ describe 'basic vswitch' do
       pp= <<-EOS
       Exec { logoutput => 'on_failure' }
 
+      case $::osfamily {
+        'RedHat': {
+          class { '::openstack_extras::repo::redhat::redhat':
+            release => 'kilo',
+          }
+        }
+      }
+
       include ::vswitch::ovs
 
       vs_bridge { 'br-beaker':
