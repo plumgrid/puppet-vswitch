@@ -6,15 +6,8 @@ describe 'basic vswitch' do
 
     it 'should work with no errors' do
       pp= <<-EOS
-      Exec { logoutput => 'on_failure' }
-
-      case $::osfamily {
-        'RedHat': {
-          class { '::openstack_extras::repo::redhat::redhat':
-            release => 'kilo',
-          }
-        }
-      }
+      include ::openstack_integration
+      include ::openstack_integration::repos
 
       include ::vswitch::ovs
 
@@ -30,7 +23,10 @@ describe 'basic vswitch' do
     end
 
     describe command('ovs-vsctl show') do
-      its(:stdout) { should match /br-beaker/ }
+      describe '#stdout' do
+        subject { super().stdout }
+        it { is_expected.to match /br-beaker/ }
+      end
     end
   end
 end
